@@ -1,0 +1,20 @@
+name: INI BUATANKU SENDIRI
+
+on:
+    push:
+        branches:
+            - main
+
+env:
+    NAMA_SAYA: "SYAFRI SURYA"
+
+jobs:
+    ngeprint-saja:
+        runs-on: ubuntu-latest
+        steps:
+            - name: INI JOB PERTAMA
+              run: |
+                  echo "INI JOB PERTAMA SIH BRO KEREN KAN"
+            - name: INI JOB KEDUA
+              run: |
+                  echo "INI JOB KEDUA SIH BRO GIMANA"
