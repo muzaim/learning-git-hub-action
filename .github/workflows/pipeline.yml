@@ -101,15 +101,36 @@ jobs:
     # ==========================================
     # 5. SIMULATED DEPLOYMENT
     # ==========================================
+    # ==========================================
+    # 5. AUTOMATED INJECTION & DEPLOYMENT
+    # ==========================================
     deploy-ssh:
         needs: build-check
         runs-on: ubuntu-latest
         steps:
-            - name: Simulasi Deployment
+            - uses: actions/checkout@v4
+
+            - name: 🪄 Suntikkan ENV dari GitHub ke .env.local
               run: |
-                  echo "🚀 Menyiapkan proses deployment aplikasi Next.js..."
-                  echo "📦 Mengemas artefak standalone & Docker image..."
-                  echo "✅ Simulasi deploy selesai! Siap dihubungkan ke server produksi."
+                  echo "🚀 Menuliskan file .env.local otomatis dari GitHub Variables..."
+
+                  cat <<EOF > .env.local
+                  PORT=${{ vars.PORT || '3000' }}
+                  APP_ENV=${{ vars.APP_ENV || 'production' }}
+                  NEXT_PUBLIC_APP_NAME=${{ vars.NEXT_PUBLIC_APP_NAME || 'Enterprise Portal' }}
+                  NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL || 'https://api.default.com' }}
+                  EOF
+
+                  echo "✅ File .env.local berhasil digenerate oleh GitHub Actions!"
+                  echo "----------------------------------------"
+                  echo "📄 Isi file .env.local yang tercipta:"
+                  cat .env.local
+                  echo "----------------------------------------"
+
+            - name: Simulasi Restart Docker Container
+              run: |
+                  echo "🐳 Docker Compose membaca .env.local hasil suntikan..."
+                  echo "🚀 docker compose up -d --build (Sukses)"
 
     # ==========================================
     # 6. HEALTH CHECK (Memastikan Server Sehat)
