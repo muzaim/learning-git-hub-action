@@ -74,24 +74,36 @@ jobs:
     # ==========================================
     # 5. DEPLOYMENT VIA SSH (Ke Mac Lokal via Ngrok)
     # ==========================================
+    # deploy-ssh:
+    #     needs: build-check
+    #     runs-on: ubuntu-latest
+    #     steps:
+    #         - name: Remote SSH & Restart Docker di Server
+    #           uses: appleboy/ssh-action@v1.0.3
+    #           with:
+    #               host: ${{ secrets.SSH_HOST }}
+    #               port: ${{ secrets.SSH_PORT }}
+    #               username: ${{ secrets.SSH_USER }}
+    #               password: ${{ secrets.SSH_PASSWORD }}
+    #               script: |
+    #                   echo " Berhasil terhubung via SSH ke server!"
+    #                   cd /Users/syafrisurya/project/belajar/learning-git-hub-action
+    #                   git pull origin main
+    #                   docker compose down
+    #                   docker compose up -d --build
+    #                   echo " Kontener Docker Next.js berhasil di-update!"
+    # ==========================================
+    # 5. SIMULATED DEPLOYMENT
+    # ==========================================
     deploy-ssh:
         needs: build-check
         runs-on: ubuntu-latest
         steps:
-            - name: Remote SSH & Restart Docker di Server
-              uses: appleboy/ssh-action@v1.0.3
-              with:
-                  host: ${{ secrets.SSH_HOST }}
-                  port: ${{ secrets.SSH_PORT }}
-                  username: ${{ secrets.SSH_USER }}
-                  password: ${{ secrets.SSH_PASSWORD }}
-                  script: |
-                      echo " Berhasil terhubung via SSH ke server!"
-                      cd /Users/syafrisurya/project/belajar/learning-git-hub-action
-                      git pull origin main
-                      docker compose down
-                      docker compose up -d --build
-                      echo " Kontener Docker Next.js berhasil di-update!"
+            - name: Simulasi Deployment
+              run: |
+                  echo "🚀 Menyiapkan proses deployment aplikasi Next.js..."
+                  echo "📦 Mengemas artefak standalone & Docker image..."
+                  echo "✅ Simulasi deploy selesai! Siap dihubungkan ke server produksi."
 
     # ==========================================
     # 6. HEALTH CHECK (Memastikan Server Sehat)
