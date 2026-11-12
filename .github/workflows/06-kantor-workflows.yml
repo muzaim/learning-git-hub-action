@@ -1,0 +1,43 @@
+name: Simulasi Pipeline Kantor (SSH + Docker Compose)
+
+on:
+    workflow_dispatch: # Kita buat manual dulu
+
+jobs:
+    # ========================================================
+    # TAHAP 1: Uji Docker Compose di Runner (Biar Ketahuan Kalau Error)
+    # ========================================================
+    test-docker:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v4
+
+            - name: Test Build Docker Compose
+              run: |
+                  echo "Mencoba build docker-compose di runner..."
+                  docker compose up -d --build
+                  docker ps
+                  echo "Kontener berhasil jalan tanpa crash!"
+
+    # ========================================================
+    # TAHAP 2: Remote SSH ke Server (Persis Seperti Kantor Lamamu)
+    # ========================================================
+    deploy-to-vps:
+        needs: test-docker
+        runs-on: ubuntu-latest
+        steps:
+            - name: Eksekusi Perintah di Server Dev
+              # CATATAN: Ini adalah contoh template yang dipakai kalau kamu sudah punya VPS:
+              # uses: appleboy/ssh-action@v1.0.3
+              # with:
+              #   host: ${{ secrets.DEV_SERVER_IP }}
+              #   username: ${{ secrets.DEV_SERVER_USER }}
+              #   key: ${{ secrets.DEV_SSH_KEY }}
+              #   script: |
+              #     cd /var/www/learning-git-hub-action
+              #     git pull origin main
+              #     docker compose up -d --build
+              run: |
+                  echo "Ini adalah step yang akan menghubungi IP Server via SSH."
+                  echo "Di server, perintah yang dijalankan adalah: git pull && docker compose up -d --build"

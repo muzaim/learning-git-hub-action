@@ -1,0 +1,9 @@
+version: "3.8"
+
+services:
+  web-app:
+    build: .
+    container_name: belajar_github_actions
+    ports:
+      - "8080:80"
+    restart: always
