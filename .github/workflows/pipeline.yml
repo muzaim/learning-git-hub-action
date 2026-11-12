@@ -1,10 +1,10 @@
 name: Enterprise CI/CD Pipeline
 
 env:
-    APP_ENV: staging-ci
-    PORT: 3000
-    NEXT_PUBLIC_APP_NAME: "Enterprise Portal CI/CD (GitHub Runner)"
-    NEXT_PUBLIC_API_URL: "https://api-staging.perusahaan.com"
+    APP_ENV: ${{ vars.APP_ENV || 'staging' }}
+    PORT: ${{ vars.PORT || '3000' }}
+    NEXT_PUBLIC_APP_NAME: ${{ vars.NEXT_PUBLIC_APP_NAME || 'Default App' }}
+    NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL || 'https://api.staging.perusahaan.com' }}
 
 on:
     push:
