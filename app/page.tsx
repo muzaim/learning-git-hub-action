@@ -21,7 +21,7 @@ export default function Home() {
 			</h1>
 			<p>
 				Aplikasi Next.js TypeScript dengan implementasi Environment
-				Variables & Pipeline CI/CD.
+				Variables & Pipeline CI/CD. keren kan
 			</p>
 
 			<div
