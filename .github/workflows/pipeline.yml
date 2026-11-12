@@ -66,6 +66,7 @@ jobs:
     # ==========================================
     build-check:
         # needs: testing
+        needs: [code-quality, security-scan, testing]
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
