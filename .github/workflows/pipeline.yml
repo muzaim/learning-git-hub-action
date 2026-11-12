@@ -1,5 +1,11 @@
 name: Enterprise CI/CD Pipeline
 
+env:
+    APP_ENV: staging-ci
+    PORT: 3000
+    NEXT_PUBLIC_APP_NAME: "Enterprise Portal CI/CD (GitHub Runner)"
+    NEXT_PUBLIC_API_URL: "https://api-staging.perusahaan.com"
+
 on:
     push:
         branches:
