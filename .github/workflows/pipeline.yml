@@ -1,4 +1,4 @@
-name: Deploy Website ke GitHub Pages
+name: Production Pipeline (CI + CD)
 
 on:
     push:
@@ -16,7 +16,28 @@ concurrency:
     cancel-in-progress: false
 
 jobs:
+    # ==========================================
+    # JOB 1: Continuous Integration (Cek Kode)
+    # ==========================================
+    lint:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v4
+
+            - name: Install HTMLHint
+              run: npm install -g htmlhint
+
+            - name: Validasi HTML
+              run: htmlhint index.html
+
+    # ==========================================
+    # JOB 2: Continuous Deployment (Publish Web)
+    # ==========================================
     deploy:
+        # KUNCI UTAMA: Job ini MENUNGGU job 'lint' sukses dulu!
+        needs: lint
+
         environment:
             name: github-pages
             url: ${{ steps.deployment.outputs.page_url }}
