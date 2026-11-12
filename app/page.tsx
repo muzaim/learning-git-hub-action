@@ -1,10 +1,6 @@
 import React from "react";
 
 export default function Home() {
-	// SIMULASI KESALAHAN TIPE DATA (Bikin Type-Check Gagal):
-	const errorTesting: number =
-		"Ini string bukan number, pasti bikin CI gagal!";
-
 	const port = process.env.PORT || "3000";
 	const appEnv = process.env.APP_ENV || "unknown";
 	const appName = process.env.NEXT_PUBLIC_APP_NAME || "Default Next.js App";
