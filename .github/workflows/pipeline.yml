@@ -4,6 +4,10 @@ on:
     push:
         branches:
             - main
+    # 1. TAMBAHKAN TRIGGER PULL REQUEST:
+    pull_request:
+        branches:
+            - main
     workflow_dispatch:
 
 permissions:
@@ -17,7 +21,7 @@ concurrency:
 
 jobs:
     # ==========================================
-    # JOB 1: Continuous Integration (Cek Kode)
+    # JOB 1: LINT (Jalan di Push MAUPUN Pull Request)
     # ==========================================
     lint:
         runs-on: ubuntu-latest
@@ -32,11 +36,13 @@ jobs:
               run: htmlhint index.html
 
     # ==========================================
-    # JOB 2: Continuous Deployment (Publish Web)
+    # JOB 2: DEPLOY (HANYA jalan kalau event-nya PUSH ke main)
     # ==========================================
     deploy:
-        # KUNCI UTAMA: Job ini MENUNGGU job 'lint' sukses dulu!
         needs: lint
+        # 2. TAMBAHKAN KONDISI INI:
+        # "Hanya jalankan deploy jika ini adalah PUSH ke branch main, JANGAN jalankan kalau cuma PR"
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
         environment:
             name: github-pages
