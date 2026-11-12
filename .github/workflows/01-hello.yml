@@ -1,24 +1,24 @@
 name: Belajar Workflow Pertama
 
 on:
-  push:
-    branches:
-     - main
-  workflow_dispatch:
+    push:
+        branches:
+            - main
+    workflow_dispatch:
 
 jobs:
-  salan-kenal:
-   runs-on: ubuntu-latest
+    salan-kenal:
+        runs-on: ubuntu-latest
 
-   steps:
-     - name: Cetak Pesan Selamat Datang
-       run: |
-        echo "Halo dari Github Actions runner!"
-        echo "Runner OS: $RUNNER_OS"
-        echo "Branch Aktif: $GITHUB_REF_NAME"
-     - name: Cek Sepsifikasi Komputer Runner
-       run: |
-        echo "Tanggal & Waktu di Cloud:"
-        date
-        echo "User aktif di runner"
-        whoami
+        steps:
+            - name: Cetak Pesan Selamat Datang
+              run: |
+                  echo "Halo dari Github Actions runner!"
+                  echo "Runner OS: $RUNNER_OS"
+                  echo "Branch Aktif: $GITHUB_REF_NAME"
+            - name: Cek Sepsifikasi Komputer Runner
+              run: |
+                  echo "Tanggal & Waktu di Cloud:"
+                  date
+                  echo "User aktif di runner"
+                  whoami
