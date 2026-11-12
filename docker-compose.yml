@@ -1,9 +1,13 @@
 version: "3.8"
 
 services:
-  web-app:
-    build: .
-    container_name: belajar_github_actions
+  next-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nextjs_enterprise
     ports:
-      - "8080:80"
+      - "8080:3000" # Port 8080 di Mac kamu -> mengarah ke port 3000 Next.js di dalam Docker
     restart: always
+    environment:
+      - NODE_ENV=production

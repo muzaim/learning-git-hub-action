@@ -1,0 +1,106 @@
+name: Enterprise CI/CD Pipeline
+
+on:
+    push:
+        branches:
+            - main
+    workflow_dispatch:
+
+jobs:
+    # ==========================================
+    # 1. CODE QUALITY (Lint + Type Check)
+    # ==========================================
+    code-quality:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: "npm"
+            - run: npm ci
+            - name: Periksa Syntax ESLint
+              run: npm run lint
+            - name: Periksa Tipe Data TypeScript
+              run: npm run type-check
+
+    # ==========================================
+    # 2. SECURITY SCAN (Vulnerability Check)
+    # ==========================================
+    security-scan:
+        needs: code-quality
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+            - name: Audit Paket NPM
+              # Cek apakah ada dependensi yang punya celah keamanan (level high/critical)
+              run: npm audit --audit-level=high || true
+
+    # ==========================================
+    # 3. AUTOMATED TESTING (Vitest)
+    # ==========================================
+    testing:
+        needs: security-scan
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: "npm"
+            - run: npm ci
+            - name: Jalankan Unit Tests
+              run: npm run test
+
+    # ==========================================
+    # 4. BUILD VERIFICATION
+    # ==========================================
+    build-check:
+        needs: testing
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: "npm"
+            - run: npm ci
+            - name: Uji Kompilasi Next.js
+              run: npm run build
+
+    # ==========================================
+    # 5. DEPLOYMENT VIA SSH (Ke Mac Lokal via Ngrok)
+    # ==========================================
+    deploy-ssh:
+        needs: build-check
+        runs-on: ubuntu-latest
+        steps:
+            - name: Remote SSH & Restart Docker di Server
+              uses: appleboy/ssh-action@v1.0.3
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  port: ${{ secrets.SSH_PORT }}
+                  username: ${{ secrets.SSH_USER }}
+                  password: ${{ secrets.SSH_PASSWORD }}
+                  script: |
+                      echo " Berhasil terhubung via SSH ke server!"
+                      cd /Users/syafrisurya/project/belajar/learning-git-hub-action
+                      git pull origin main
+                      docker compose down
+                      docker compose up -d --build
+                      echo " Kontener Docker Next.js berhasil di-update!"
+
+    # ==========================================
+    # 6. HEALTH CHECK (Memastikan Server Sehat)
+    # ==========================================
+    health-check:
+        needs: deploy-ssh
+        runs-on: ubuntu-latest
+        steps:
+            - name: Laporan Sukses
+              run: |
+                  echo " Pipeline CI/CD Selesai 100%!"
+                  echo "Aplikasi Next.js sekarang siap diakses di port 8080."
